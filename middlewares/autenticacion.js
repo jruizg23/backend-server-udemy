@@ -1,16 +1,15 @@
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
-var SEED = require('../config/config').SEED;
+const SEED = require('../config/config').SEED;
 
 // ====================================
 // Verificar token
 // ====================================
 exports.verificaToken = function(req, res, next) {
-    // var token = req.query.token;
+    // const token = req.query.token;
 
     var token = req.headers['x-access-token'] || req.headers['authorization'];
 
-    console.log(token);
     if (token && token.startsWith('Bearer ')) {
         token = token.slice(7, token.length);
     }

@@ -1,12 +1,12 @@
-var express = require('express');
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-var SEED = require('../config/config').SEED;
+const SEED = require('../config/config').SEED;
 
-var app = express();
+const app = express();
 
-var Usuario = require('../models/usuario');
+const Usuario = require('../models/usuario');
 
 
 // ====================================
@@ -14,7 +14,7 @@ var Usuario = require('../models/usuario');
 // ====================================
 app.post('/', (req, res) => {
 
-    var body = req.body;
+    const body = req.body;
 
     Usuario.findOne({ email: body.email }, (err, usuarioDB) => {
 
@@ -45,7 +45,7 @@ app.post('/', (req, res) => {
         // TODO: Crear token!!
 
         usuarioDB.password = '[~+_-_+~]';
-        var token = jwt.sign({ usuario: usuarioDB }, SEED, { expiresIn: 14400 }); // 4 horas
+        const token = jwt.sign({ usuario: usuarioDB }, SEED, { expiresIn: 14400 }); // 4 horas
 
         res.status(200).json({
             ok: true,

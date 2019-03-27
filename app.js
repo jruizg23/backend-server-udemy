@@ -1,11 +1,11 @@
 // Requires
-var express = require('express');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 
-// Inicializar variables
-var app = express();
+// Inicializar constiables
+const app = express();
 
 // Body Parser
 
@@ -14,10 +14,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
+// Server index config
+// const serveIndex = require('serve-index');
+// app.use(express.static(__dirname + '/'));
+// app.use('/uploads', serveIndex(__dirname + '/uploads'));
+
+
 // Importar rutas
-var appRoutes = require('./routes/app');
-var usuarioRoutes = require('./routes/usuario');
-var loginRoutes = require('./routes/login');
+const appRoutes = require('./routes/app');
+const usuarioRoutes = require('./routes/usuario');
+const loginRoutes = require('./routes/login');
+const hospitalRoutes = require('./routes/hospital');
+const medicoRoutes = require('./routes/medico');
+const busquedaRoutes = require('./routes/busqueda');
+const uploadRoutes = require('./routes/upload');
+const imagenesRoutes = require('./routes/imagenes');
 
 // Conexión a la base de datos
 
@@ -32,6 +43,12 @@ mongoose.set('useCreateIndex', true);
 // Rutas
 app.use('/usuario', usuarioRoutes);
 app.use('/login', loginRoutes);
+app.use('/hospital', hospitalRoutes);
+app.use('/medico', medicoRoutes);
+app.use('/busqueda', busquedaRoutes);
+app.use('/upload', uploadRoutes);
+app.use('/img', imagenesRoutes);
+
 app.use('/', appRoutes);
 
 // Escuchar peticiones
