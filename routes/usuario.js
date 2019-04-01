@@ -20,7 +20,7 @@ app.get('/', (req, res, next) => {
     var offset = req.query.offset || 0;
     offset = Number(offset);
 
-    Usuario.find({}, 'nombre apellido email img role')
+    Usuario.find({}, 'nombre apellido email img role google')
         .skip(offset)
         .limit(limit)
         .exec(

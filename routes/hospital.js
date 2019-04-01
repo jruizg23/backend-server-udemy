@@ -16,13 +16,31 @@ app.get('/', (req, res, next) => {
     var offset = req.query.offset || 0;
     offset = Number(offset);
 
-    Hospital.find({})
-        .skip(offset)
-        .limit(limit)
-        .populate('usuario', 'nombre apellido email')
-        .exec(
-            (err, hospitales) => {
+    let query;
 
+    if (limit != -1) {
+        query = Hospital.find({})
+            .skip(offset)
+            .limit(limit)
+            .populate('usuario', 'nombre apellido email');
+    } else {
+        query = Hospital.find({})
+            .populate('usuario', 'nombre apellido email');
+    }
+
+
+    query.exec(
+        (err, hospitales) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error cargando hospitales',
+                    errors: err
+                });
+            }
+
+            Hospital.countDocuments({}, (err, conteo) => {
                 if (err) {
                     return res.status(500).json({
                         ok: false,
@@ -31,25 +49,50 @@ app.get('/', (req, res, next) => {
                     });
                 }
 
-                Hospital.countDocuments({}, (err, conteo) => {
-                    if (err) {
-                        return res.status(500).json({
-                            ok: false,
-                            mensaje: 'Error cargando hospitales',
-                            errors: err
-                        });
-                    }
+                res.status(200).json({
+                    ok: true,
+                    hospitales,
+                    limit,
+                    offset,
+                    total: conteo
+                });
+            });
+        }
+    );
+});
 
-                    res.status(200).json({
-                        ok: true,
-                        hospitales,
-                        limit,
-                        offset,
-                        total: conteo
-                    });
+// ====================================
+// Obtener Hospital por ID
+// ====================================
+app.get('/:id', mdAutentificacion.verificaToken, (req, res) => {
+
+    const id = req.params.id;
+
+    Hospital.findById(id)
+        .populate('usuario', 'nombre img email')
+        .exec((err, hospital) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar el hospital',
+                    errors: err
                 });
             }
-        );
+
+            if (!hospital) {
+                return res.status(404).json({
+                    ok: false,
+                    mensaje: 'El hospital con el id ' + id + ' no existe',
+                    errors: { message: 'No existe un hospital con ese id' }
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+                hospital
+            });
+        });
 });
 
 // ====================================
